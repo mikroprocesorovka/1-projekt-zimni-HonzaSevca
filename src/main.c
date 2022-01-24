@@ -54,3 +54,39 @@ int main(void)
             
             while(present_value>0){ //while se točí dokud present_value není 0 
                 present_value = present_value -1;
+
+                lcd_gotoxy(13, 1);
+                sprintf(text,"%1u",present_value);
+                lcd_puts(text);
+                if (present_value<10){
+                    lcd_gotoxy(14, 1);
+                    sprintf(text," ");
+                    lcd_puts(text);
+                    }
+                delay_ms(500);
+                delay_ms(500);
+                pomocna = 1;
+   
+            }
+
+            if(present_value == 0 && pomocna == 1){ 
+                pomocna = 0;
+                GPIO_WriteHigh(GPIOB, GPIO_PIN_6);
+                delay_ms(420);
+                GPIO_WriteLow(GPIOB, GPIO_PIN_6);
+            }
+        }
+
+        //získávání aktuální hodnoty z enkoderu
+        present_value = TIM1_GetCounter();
+        if(present_value != previous_value)
+        {
+            lcd_gotoxy(14, 0);
+            sprintf(text,"%1u",present_value);
+            lcd_puts(text);
+        }
+        previous_value = present_value;
+    }
+}
+/*-------------------------------  Assert -----------------------------------*/
+#include "__assert__.h"
