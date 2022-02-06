@@ -66,7 +66,7 @@ int main(void)
                 delay_ms(500);
                 delay_ms(500);
                 pomocna = 1;
-   
+                                            /// kdyz je present value (nejaka hodnota) vetsi jak nula - odecte -1
             }
 
             if(present_value == 0 && pomocna == 1){ 
@@ -79,7 +79,7 @@ int main(void)
 
         //získávání aktuální hodnoty z enkoderu
         present_value = TIM1_GetCounter();
-        if(present_value != previous_value)
+        if(present_value != previous_value) //pokud hodnota není 0, nebo-li predesla hodnota tak se odecita 1000ms (1sek)
         {
             lcd_gotoxy(14, 0);
             sprintf(text,"%1u",present_value);
