@@ -1,4 +1,4 @@
-#include "stm8s.h"
+//#include "stm8s.h"
 #include "milis.h"
 #include "stm8_hd44780.h"
 #include "spse_stm8.h" 
@@ -20,10 +20,10 @@ void setup(void)
     TIM1_Cmd(ENABLE);
 }
 
-void delay_ms(uint16_t ms) {
+void delay_ms(uint16_t ms) {  //čekej tak dlouho jaká byla zadaná hodnota
     uint16_t  i;
-    for (i=0; i<ms; i = i+1){
-        _delay_us(250);
+    for (i=0; i<ms; i = i+1){  // i se nastaví do nuly, i=i+1 než se do funkce dostane 500ms, tak pricita 1
+        _delay_us(250);         //funkce jede dokud se nerovná
         _delay_us(248);
         _delay_us(250);
         _delay_us(250);
@@ -32,16 +32,17 @@ void delay_ms(uint16_t ms) {
 
 int main(void)
 {
-    char text[32];
+    char text[32]; //ukládá text, který má 32 bitů
     uint32_t pomocna = 0;
     unsigned int present_value = 0x0000;   // promenne pro ncoder (hodnoty)
     unsigned int previous_value = 0x0001;
 
-
-    
-    setup();
-
-    lcd_gotoxy(0, 0);
+    //pomocna - aby tlacitko nepipalo v jakemkoliv stavu
+    //aby nepipalo kdyz zmacknu v jakemkoliv stavu talcitko
+    //presentvalue
+    setup(); //volám setup
+    //lcd displej
+    lcd_gotoxy(0, 0);      // pozice lcd displeje
     sprintf(text,"pocatecni cas:");
     lcd_puts(text);
 
@@ -50,17 +51,18 @@ int main(void)
     lcd_puts(text);
 
     while (1) {
-        if(GPIO_ReadInputPin(GPIOB,GPIO_PIN_7)==RESET){ //tlacitko ncoderu
+        if(GPIO_ReadInputPin(GPIOB,GPIO_PIN_7)==RESET){     //tlacitko ncoderu 
+                                                            //probíhá dokud hondota ncoderu  se nerovná 0
             
             while(present_value>0){ //while se točí dokud present_value není 0 
-                present_value = present_value -1;
+                present_value = present_value -1; //odecitam od sebe hodnoty
 
                 lcd_gotoxy(13, 1);
                 sprintf(text,"%1u",present_value);
                 lcd_puts(text);
-                if (present_value<10){
-                    lcd_gotoxy(14, 1);
-                    sprintf(text," ");
+                if (present_value<10){   // pokud je hodnota ,ensi jak deset, hodnota=neni dvojcifernecislo           
+                    lcd_gotoxy(14, 1);    //prepise se mezerou, nastavi se na nej mezera
+                    sprintf(text," ");      
                     lcd_puts(text);
                     }
                 delay_ms(500);
